@@ -1,0 +1,8 @@
+#grad {
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,121,119,1) 62%, rgba(0,212,255,1) 100%);   
+}
+.popup-image {
+    width: 20px; /* Set the width as needed */
+    height: 10vh; /* Maintain aspect ratio */
+}

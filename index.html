@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="leaflet-routing-machine-3.2.12\dist\leaflet-routing-machine.css">
+    <link rel="stylesheet" href="leaflet-search-master\dist\leaflet-search.src.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@[VERSION]/dist/L.Control.Locate.min.css" />
+    <style>
+        body{
+            padding: 0%;
+            margin:0%
+        }
+        #map { height: 100vh;
+        width: 100%;
+    }
+    </style>
+</head>
+<body>
+    
+    <div id="map" style="z-index: 1;"></div>
+</div>
+    <!-- <div class="legend">
+        <h1>Legend:</h1>
+        <div class="legend-item"><span class="legend-color" style="background-color: red;"></span><b>Bachelor</b></div>
+        <div class="legend-item "><span class="legend-color" style="background-color: blue; "></span><b>Master</b></div> 
+    </div>
+    
+    <style>
+        .legend {
+            background-color: rgba(0, 255, 21, 0.284);
+            padding: 12px;
+            border: 3px solid #bed225;
+            border-radius: 6px;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            width: 10%;
+
+        
+            /* Adjust the gradient colors as needed */
+        }
+
+
+
+        .legend h4 {
+            margin: 0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .legend table {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .legend table td {
+            padding: 5px;
+        }
+
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+    </style> -->
+</body>
+</html>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+<script src="./shapefile.js"></script>
+<script src="./school.js"></script>
+<script src="./choropleth.js"></script>
+<script src="./dotdensity.js"></script>
+<script src="./piechart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+<script src="leaflet-routing-machine-3.2.12/dist/leaflet-routing-machine.min.js"></script>
+<script src="leaflet-search-master\dist\leaflet-search.src.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet.minichart/dist/leaflet.minichart.min.js" charset="utf-8"></script>
+<script>
+    var map = L.map('map').setView([28.2037, 83.9843], 12);
+  
+    
+    
+var cycleosm=L.tileLayer('http://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+maxZoom: 19,
+opacity: 0.6,
+});
+cycleosm.addTo(map);
+
+var Humanitarian=L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{
+    maxZoom: 19,
+    opacity: 0.6,
+});
+Humanitarian.addTo(map);
+var osm=L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    opacity: 0.6,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+osm.addTo(map);
+
+
+var myIcon = L.icon({
+    iconUrl: 'img/icon2.png',
+    iconSize:[45,45],
+});
+var Icon = L.icon({
+    iconUrl: 'img/school.png',
+    iconSize:[40,40],
+});
+var abc=L.icon({
+    iconUrl: 'img/icon.png'});
+//adding marker and popup icon
+var marker=L.marker([28.2137, 83.9843],{icon: myIcon});
+marker.addTo(map);
+
+var popup = marker.bindPopup("<div class='grad'> <font color='red'><h1> <b><i>Pokhara</h1></b></i></font>");
+popup.addTo(map);
+var shape = L.geoJSON(shape,{style:{
+    fillColor: 'RGBA(255,255,255,0)',
+    fillOpacity: 0,
+    color: 'blue'
+},}).addTo(map);
+var locate= map.on('click', function (e) {
+    console.log(e)
+    var newMarker = L.marker([e.latlng.lat, e.latlng.lng]);
+    map.once('locationfound', function (event) {
+        var currentLocation = event.latlng;
+    L.Routing.control({
+        waypoints: [
+           L.latLng(currentLocation.lat, currentLocation.lng),
+            L.latLng(e.latlng.lat, e.latlng.lng)
+        ]
+    }).on('routesfound', function (e) {
+        var routes = e.routes;
+        console.log(routes);
+
+
+    }).addTo(map);
+});
+lc.start();
+});
+var school=L.geoJSON(school,
+{
+    
+    onEachFeature:function(feature,layer){
+      
+        layer.bindPopup(`<br><b><i><font color="brown"><font size="+1" style="border-bottom: 2px solid green";>` + feature.properties.Name + `</font></i></b>` +
+            `<br><br><b><i><font color="brown"><img src="` + feature.properties.Photo1 + `" style="width:200px;height:20vh; alt="Image"></font></i></b>`);
+    }, style: {
+    iconUrl: 'img/icon.png'
+},
+     pointToLayer: function (features, latlng) {
+       return L.marker(latlng, {icon: Icon})
+}
+});
+                 
+//choropleth map
+//Color defined
+function getColor(d) {
+    return d >= 4 ? '#a63603' :
+           d >= 3 ?  '#e6550d':
+           d >= 2 ? '#fd8d3c' :
+           d >= 1 ? '#fdbe85' :
+            d>=0?    '#feedde':
+            '#a63603'
+}
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.No_of_coll),
+        weight: 1,
+        color: 'black',
+        opacity: 0.6,
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+//
+
+// Mouseover event handler
+/*function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    layer.bringToFront();
+}
+
+// Mouseout event handler
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+}
+
+// Function to be executed on each feature
+function onEachFeature(feature, layer) {
+    layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight
+    });
+}
+
+// Creating GeoJSON layer with style and event handling
+var geojson = L.geoJson(choropleth, {
+    style: style,
+    onEachFeature: onEachFeature
+});*/
+var choroplethLayer = L.geoJson(choropleth, { style: style,
+    onEachFeature:function(feature,layer){
+      
+        layer.bindPopup(`<br><b><i><font color="brown"><font size="+1"><u> Ward No.</u>= <font color="blue"><font size="+1">`+feature.properties.NEW_WARD_N+`</font></i></b>` +
+        `<br><br><b><i><font color="brown"><font size="+1"><u>No. of Colleges</u>= <font color="blue"><font size="+1">`+feature.properties.No_of_coll+`</font></i></b>`)
+}})
+
+//Piechart
+
+    //dot density map
+
+    function getColor1(a){
+        return   a>=11684? 25:
+                    a>=660? 15:
+                    a>=439? 10:
+                    a>=105? 5:
+                            4;
+        }
+        function style11(feature) {
+            return {
+                radius :getColor1(feature.properties.Students),
+            fillColor: 'yellow', 
+            color: 'green',
+            stroke: true,
+            weight: 1,
+            opacity:5
+           
+        };
+    }
+    
+var store = L.geoJSON(dotdensity, {style:style11,
+    onEachFeature:function(feature,layer){
+        layer.bindPopup(
+            `<br><br><b><i><font color="black"><font size="+2">`+feature.properties.Name+`</font></i></b>`+`<br><br><b><i><font color="brown"><font size="+1"> No of Students: </u><font color="blue"><font size="+1">` + feature.properties.Students+`</font></i></b>`
+        )
+        
+
+
+    }, style:style11,
+    pointToLayer: function (features, latlng) {
+        return L.circleMarker(latlng, style11)
+    }
+}).addTo(map);
+//Current location
+var Icon11 = L.icon({
+    imageUrl: "C:\Users\Sachin\Desktop\Leaflet\Leaflet\location11.png",
+    iconSize: [4, 4]
+})
+var lc = L.control
+  .locate({
+   
+  flyTo:true,
+  strings: {
+    icon: Icon11,
+      title: "Current Location",
+    }
+  })
+  .addTo(map);
+
+
+var baseMaps = {
+    "<span style='color: red'>Humanitarian</span>":Humanitarian,
+    "<span style='color: blue'>CycleOSM</span>":cycleosm, 
+    "<span style='color:green'>OpenStreetMap</span>": osm
+};
+var overlayMaps={
+    "<font color='rgba(255, 99, 71, 0.4)'>Study Area</font>": shape,
+    "<font color='rgba(255, 99, 71, 0.4)'>Schools</font>": school,
+    "<font color='rgba(255, 99, 71, 0.4)'>Colleges in Wards</font>": choroplethLayer,
+    "<font color='rgba(255, 99, 71, 0.4)'>Students in College</font>": store,
+
+}
+L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
+
+map.removeControl(shape);
+map.removeControl(school);
+map.removeControl(choroplethLayer);
+map.removeControl(store);
+</script>
